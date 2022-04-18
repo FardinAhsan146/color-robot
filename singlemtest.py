@@ -1,5 +1,6 @@
 ##################################
 # single motor test script, Fardin
+# Status: passed
 ##################################
 
 import RPi.GPIO as GPIO          
