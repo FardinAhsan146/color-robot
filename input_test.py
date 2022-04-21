@@ -1,13 +1,17 @@
 ############################
-# Multi Motor test, Fardin
+# Multi Motor test -- input, Fardin
 # Status: 
 ############################
 import RPi.GPIO as gpio
+import sshkeyboard
 import time
 
 ## Initialize pins
 # Enables
 def init():
+    """
+    Initialize pins
+    """
     gpio.setmode(gpio.BCM)
     gpio.setup(17, gpio.OUT) # ENB
     gpio.setup(16, gpio.OUT) # ENA
@@ -21,7 +25,7 @@ def init():
     gpio.setup(21, gpio.OUT) # IN2
 
     
-def reverse(t = 1):
+def reverse():
     """
     Default to 5 seconds of travel
     unless specified otherwise
@@ -35,12 +39,9 @@ def reverse(t = 1):
     gpio.output(21, True)
     gpio.output(22, True)
     gpio.output(27, False)
+
     
-    time.sleep(t)
-    
-    gpio.cleanup() 
-    
-def forward(t = 1):
+def forward():
     init()
     gpio.output(17, True) # ENB
     gpio.output(16, True) # ENA
@@ -49,12 +50,9 @@ def forward(t = 1):
     gpio.output(21, False)
     gpio.output(22, False)
     gpio.output(27, True)
+
     
-    time.sleep(t)
-    
-    gpio.cleanup()
-    
-def turn_right(t = 0.5):
+def turn_right():
     init()
     gpio.output(17, True) # ENB
     gpio.output(16, True) # ENA
@@ -63,12 +61,11 @@ def turn_right(t = 0.5):
     gpio.output(21, False)
     gpio.output(22, False)
     gpio.output(27, False)
+   
     
-    time.sleep(t)
+
     
-    gpio.cleanup()
-    
-def turn_left(t = 0.5):
+def turn_left():
     init()
     gpio.output(17, True) # ENB
     gpio.output(16, False) # ENA
@@ -77,26 +74,27 @@ def turn_left(t = 0.5):
     gpio.output(21, False)
     gpio.output(22, False)
     gpio.output(27, True)
-    
-    time.sleep(t)
-    
+
+def release(x):    
     gpio.cleanup()
-    
+
+def press(x):
+    if x == 'w':
+        forward()
+    elif x == 's':
+        reverse()
+    elif x == 'd':
+        turn_right()
+    elif x == 'a':
+        turn_left()
+    else:
+        gpio.cleanup()
+        print('Ending test')
+        return None
+
 if __name__ == '__main__':
 
     while True:
-    
-        x,_t = input('Enter direction: ').split()
-        _t = float(_t)
+        sshkeyboard.listen_keyboard(on_press = press
+        ,on_release = release)
 
-        if x == 'f':
-            forward(t = _t)
-        elif x == 'b':
-            reverse(t = _t)
-        elif x == 'r':
-            turn_right(t = _t)
-        elif x == 'l':
-            turn_left(t = _t)
-        else:
-            print('Ending test')
-            break
