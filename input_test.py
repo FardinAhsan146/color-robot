@@ -23,7 +23,7 @@ def init():
 	#Right wheel
     gpio.setup(20, gpio.OUT) # IN1
     gpio.setup(21, gpio.OUT) # IN2
-
+    
     
 def reverse():
     """
@@ -80,12 +80,16 @@ def release(x):
 
 def press(x):
     if x == 'w':
+        print('Going forward')
         forward()
     elif x == 's':
+        print('Going backwards')
         reverse()
     elif x == 'd':
+        print('Turning right')
         turn_right()
     elif x == 'a':
+        print('Turning left')
         turn_left()
     else:
         gpio.cleanup()

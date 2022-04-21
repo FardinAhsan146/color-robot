@@ -1,6 +1,7 @@
 ############################
-# Multi Motor test -- input, Fardin
-# Status: 
+# Main Script, Robotics Final Project
+# "Color sensing" Robot
+# By Fardin 
 ############################
 import RPi.GPIO as gpio
 import sshkeyboard
@@ -10,10 +11,10 @@ import time
 # Enables
 def init():
     """
-    Initialize pins
+    Initialize pins, motors 
     """
     gpio.setmode(gpio.BCM)
-    gpio.setup(17, gpio.OUT) # ENB
+    gpio.setup(17, gpio.OUT) # ENB (Motor driver)
     gpio.setup(16, gpio.OUT) # ENA
 
 	# Left wheel
@@ -24,11 +25,15 @@ def init():
     gpio.setup(20, gpio.OUT) # IN1
     gpio.setup(21, gpio.OUT) # IN2
     
+    # Magnet init
+    gpio.setup(19,gpio.OUT) # ENA (Magnet driver)
+    gpio.setup(6,gpio.OUT) #IN1
+    gpio.setup(21,gpio.OUT) #IN2
     
+
 def reverse():
     """
-    Default to 5 seconds of travel
-    unless specified otherwise
+    Travel until specified otherwise!
     """
     init()
     
@@ -62,9 +67,6 @@ def turn_right():
     gpio.output(22, False)
     gpio.output(27, False)
    
-    
-
-    
 def turn_left():
     init()
     gpio.output(17, True) # ENB
@@ -74,11 +76,43 @@ def turn_left():
     gpio.output(21, False)
     gpio.output(22, False)
     gpio.output(27, True)
+    
+def magnet_on():
+    """
+    Create a massive amount 
+    of magnetic field
+    """
+    init()
+    
+    GPIO.output(19, True)
+    print('Magnet ON')
+    GPIO.output(6,GPIO.HIGH)
+    GPIO.output(21,GPIO.LOW)
+    
+def magnet_off():
+    """
+    Trust Flyback diode 
+    """
+    init()
+    gpio.cleanup()    
+
 
 def release(x):    
-    gpio.cleanup()
+    """
+    Clear gpio class method
+    on keystroke release
+    """
+    if x == 'm':
+        return
+    gpio.cleanup([17,16,27,22,20,21])
 
 def press(x):
+    """
+    Program press NOT TAP
+    actions on key stroke
+    """
+
+    # Wheel controls
     if x == 'w':
         print('Going forward')
         forward()
@@ -91,6 +125,10 @@ def press(x):
     elif x == 'a':
         print('Turning left')
         turn_left()
+    elif x == 'm':
+        magnet_on()
+    elif x == 'f':
+        magnet_off()
     else:
         gpio.cleanup()
         print('Ending test')
