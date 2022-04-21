@@ -1,3 +1,8 @@
+#########################
+# RGB test, Fardin
+# Code credit goes to: https://gist.github.com/elktros
+##########################
+
 import RPi.GPIO as GPIO
 import time
 

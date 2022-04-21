@@ -25,10 +25,12 @@ def init():
     gpio.setup(20, gpio.OUT) # IN1
     gpio.setup(21, gpio.OUT) # IN2
     
+def init_magnet():
     # Magnet init
+    gpio.setmode(gpio.BCM)
     gpio.setup(19,gpio.OUT) # ENA (Magnet driver)
     gpio.setup(6,gpio.OUT) #IN1
-    gpio.setup(21,gpio.OUT) #IN2
+    gpio.setup(26,gpio.OUT) #IN2
     
 
 def reverse():
@@ -77,25 +79,32 @@ def turn_left():
     gpio.output(22, False)
     gpio.output(27, True)
     
-def magnet_on():
-    """
-    Create a massive amount 
-    of magnetic field
-    """
-    init()
+# def magnet_on():
+    # """
+    # Create a massive amount 
+    # of magnetic field
+    # """
+    # gpio.cleanup()
+    # init()
     
-    GPIO.output(19, True)
-    print('Magnet ON')
-    GPIO.output(6,GPIO.HIGH)
-    GPIO.output(21,GPIO.LOW)
+    # gpio.output(19, True)
+    # print('Magnet ON')
+    # gpio.output(6,gpio.HIGH)
+    # gpio.output(26,gpio.LOW)
     
-def magnet_off():
-    """
-    Trust Flyback diode 
-    """
-    init()
-    gpio.cleanup()    
+# def magnet_off():
+    # """
+    # Trust Flyback diode 
+    # """
+    # init()
+    # print('Magnet OFF')
+    # gpio.cleanup()
 
+def clean_all():
+    gpio.cleanup()
+
+def clean_motor():
+    gpio.cleanup((17,16,27,22,20,21))
 
 def release(x):    
     """
@@ -103,8 +112,13 @@ def release(x):
     on keystroke release
     """
     if x == 'm':
-        return
-    gpio.cleanup([17,16,27,22,20,21])
+        clean_motor()
+    elif x in ('w','a','s','d'):
+        clean_motor()
+    else:
+        clean_all()
+        
+
 
 def press(x):
     """
@@ -126,9 +140,10 @@ def press(x):
         print('Turning left')
         turn_left()
     elif x == 'm':
-        magnet_on()
+        clean_motor()
+        init_magnet()
     elif x == 'f':
-        magnet_off()
+        clean_all()
     else:
         gpio.cleanup()
         print('Ending test')

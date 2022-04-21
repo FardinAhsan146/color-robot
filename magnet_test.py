@@ -8,13 +8,13 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
-in1, in2, en = 06,21,19
+in1, in2, en = 6,26,19
 
 #Set all outputs to 1
 for pin in (in1, in2, en):
     GPIO.setup(pin,GPIO.OUT)
 
-print('Starting Magnet test script)
+print('Starting Magnet test script')
 
 while True:
 
@@ -26,7 +26,7 @@ while True:
         GPIO.output(in2,GPIO.LOW)
         time.sleep(5)
     elif x == 'f':
-        GPIO.output(en, True)
+        GPIO.output(en, False)
         print('going backwards')
         GPIO.output(in2,GPIO.HIGH)
         GPIO.output(in1,GPIO.LOW)
